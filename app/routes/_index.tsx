@@ -1,41 +1,49 @@
-import type { MetaFunction } from "@remix-run/node";
+import { getFormProps, getInputProps, useForm } from "@conform-to/react";
+import { parseWithZod } from "@conform-to/zod";
+import type { ActionFunctionArgs } from "@remix-run/node";
+import { ClientActionFunctionArgs, Form, useActionData } from "@remix-run/react";
+import z from "zod";
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
-  ];
+const schema = z.object({
+  nickname: z.string(),
+});
+
+// export const action = async ({ request }: ActionFunctionArgs) => {
+//   const formData = await request.formData();
+//   const submission = parseWithZod(formData, { schema });
+//   console.log("action called", submission);
+//   return submission.reply({ resetForm: true });
+// };
+
+export const clientAction = async ({ request }: ClientActionFunctionArgs) => {
+  const formData = await request.formData();
+  const submission = parseWithZod(formData, { schema });
+  console.log("action called", submission);
+  return submission.reply({ resetForm: true });
 };
 
 export default function Index() {
+  // const lastResult = useActionData<typeof action>();
+  const lastResult = useActionData<typeof clientAction>();
+  const [form, fields] = useForm({
+    shouldValidate: "onBlur",
+    lastResult,
+  });
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
-      <h1>Welcome to Remix</h1>
-      <ul>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/blog"
-            rel="noreferrer"
-          >
-            15m Quickstart Blog Tutorial
-          </a>
-        </li>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/jokes"
-            rel="noreferrer"
-          >
-            Deep Dive Jokes App Tutorial
-          </a>
-        </li>
-        <li>
-          <a target="_blank" href="https://remix.run/docs" rel="noreferrer">
-            Remix Docs
-          </a>
-        </li>
-      </ul>
+    <div style={{ padding: "2rem" }}>
+      <h2>remix form</h2>
+      <Form method="POST">
+        <input type="text" name="nickname" />
+        <button type="submit">Submit</button>
+      </Form>
+
+      <hr />
+
+      <h2>remix form with conform</h2>
+      <Form method="POST" {...getFormProps(form)}>
+        <input {...getInputProps(fields.nickname, { type: "text" })} />
+        <button type="submit">Submit</button>
+      </Form>
     </div>
   );
 }
