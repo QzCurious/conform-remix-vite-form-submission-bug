@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { getFormProps, getInputProps, useForm } from "@conform-to/react";
-import { parseWithZod } from "@conform-to/zod";
+import { getZodConstraint, parseWithZod } from "@conform-to/zod";
 import type { ActionFunctionArgs } from "@remix-run/node";
 import {
   ClientActionFunctionArgs,
@@ -32,6 +33,10 @@ export default function Index() {
   const [form, fields] = useForm({
     shouldValidate: "onBlur",
     lastResult,
+    // onValidate({ formData }) {
+    //   return parseWithZod(formData, { schema });
+    // },
+    // constraint: getZodConstraint(schema),
   });
   return (
     <div style={{ padding: "2rem" }}>
