@@ -1,11 +1,15 @@
 import { getFormProps, getInputProps, useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import type { ActionFunctionArgs } from "@remix-run/node";
-import { ClientActionFunctionArgs, Form, useActionData } from "@remix-run/react";
+import {
+  ClientActionFunctionArgs,
+  Form,
+  useActionData,
+} from "@remix-run/react";
 import z from "zod";
 
 const schema = z.object({
-  nickname: z.string(),
+  nickname: z.string().optional(),
 });
 
 // export const action = async ({ request }: ActionFunctionArgs) => {
